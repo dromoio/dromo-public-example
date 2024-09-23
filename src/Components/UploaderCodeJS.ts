@@ -1,6 +1,5 @@
-export const FastTrackUploaderCode = `<DromoUploader
-licenseKey="<YOUR KEY HERE>"
-fields={[
+export const UploaderCodeJS = `const license = "<YOUR KEY HERE>";
+const fields= [
   // There are two required settings for each field: label and key
   {
     label: "ID",
@@ -65,30 +64,29 @@ fields={[
       },
     ],
   },
-]}
-settings={{
-  importIdentifier: "Fast Track Contacts 2",
-  developmentMode: true,
+];
+const settings={
+  importIdentifier: "Contacts",
+  developmentMode: false,
   uploadStep: {
     helpText:
       "Drag and drop the sample file. You can customize this help text. It even supports HTML so you can style it, embed videos, etc.",
   },
-  autoMapHeaders: true,
-  backendSyncMode: "FULL_DATA",
-  matchingStep: {
-    headerRowOverride: 0,
-  },
+  backendSyncMode: "MAPPINGS_ONLY",
   invalidDataBehavior: "REMOVE_INVALID_ROWS",
-}}
-user={{
+};
+
+const user={
   id: "1",
   name: "Joan Livingston",
   email: "jane@dromo.io",
   companyId: "12345",
   companyName: "DromoCustomer",
-}}
-rowHooks={[
-  (record, _mode) => {
+};
+
+const dromo = new DromoUploader(license, fields, settings, user);
+
+dromo.registerRowHook((record, _mode) => {
     const newRecord = record;
 
     const {
@@ -98,26 +96,19 @@ rowHooks={[
     newRecord.row.fullName.value = firstName.value + " " + lastName.value;
 
     return newRecord;
-  },
-]}
-onResults={(response, metadata) => {
-  props.setResults(response);
-}}
-stepHooks={[
-  {
-    type: "REVIEW_STEP",
-    callback: (importer) => {
-      importer.addField(
-        {
-          key: "fullName",
-          label: "Full Name",
-          readOnly: true,
-        },
-        { after: "lastName" }
-      );
+});
+
+dromo.registerStepHook("REVIEW_STEP", (importer) => {
+  importer.addField(
+    {
+      key: "fullName",
+      label: "Full Name",
+      readOnly: true,
     },
-  },
-]}
->
-Launch Dromo
-</DromoUploader>`;
+    { after: "lastName" }
+  );
+})
+
+dromo.onResults((response, metadata) => {
+  props.setResults(response);
+};`;
