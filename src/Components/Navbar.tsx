@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon, Bars3Icon } from "@heroicons/react/24/outline";
 import { Tabs } from "../App";
+import { ReactComponent as InfoIcon } from "../assets/icons/info.svg";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -74,13 +75,9 @@ export default function Navbar(props: {
                 {/* Profile dropdown */}
                 <Menu as="div" className="ml-3 relative">
                   <div>
-                    <Menu.Button className="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <Menu.Button className="bg-white rounded-full flex text-sm focus:outline-none ">
                       <span className="sr-only">Open user menu</span>
-                      <img
-                        className="h-8 w-8 rounded-full"
-                        src="charlie.png"
-                        alt=""
-                      />
+                      <InfoIcon />
                     </Menu.Button>
                   </div>
                   <Transition

@@ -73,8 +73,9 @@ export const Uploader = (props: { setResults: (data: any[]) => void }) => {
       ]}
       settings={{
         importIdentifier: "Contacts",
-        developmentMode: true,
+        developmentMode: false,
         matchingStep: { headerRowOverride: 0 },
+        maxRecords: 200,
         uploadStep: {
           helpText:
             "Drag and drop the sample file. You can customize this help text. It even supports HTML so you can style it, embed videos, etc.",

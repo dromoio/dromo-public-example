@@ -14,7 +14,8 @@ import {
   PlusSmallIcon,
 } from "@heroicons/react/24/outline";
 import { FastTrackUploader } from "./FastTrackUploader";
-import { FastTrackUploaderCode } from "./FastTrackUploaderCode";
+import { FastTrackUploaderCodeReact } from "./FastTrackUploaderCodeReact";
+import { FastTrackUploaderCodeJS } from "./FastTrackUploaderCodeJS";
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -52,24 +53,25 @@ export const FastTrackUploadPage = (props: {
   setTab: (tab: Tabs) => void;
 }) => {
   const [display, setDisplay] = useState<DisplayOptions>("demo");
+  const [codeLang, setCodeLang] = useState<string>("React");
 
   return (
     <div>
       <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow grid grid-cols-[1fr,auto] items-center">
         <div className="border-b border-gray-200 bg-white px-4 py-5 sm:px-6 flex flex-row justify-between ">
           <div className="min-w-0 ml-4 mt-2">
-            <h3 className="text-base font-semibold leading-6 text-gray-900">
-              🏎️ 🏁 Dromo Fast Track Importer Demo
-            </h3>
+            <h1 className="text-2xl font-semibold leading-6 text-gray-900">
+              🏎️ 🏁 Dromo Fast Track Demo
+            </h1>
           </div>
           <div className="flex items-center align-middle">
             <a
               href="https://codesandbox.io/p/sandbox/dromo-fast-track-demo-cw446p?layout=%257B%2522sidebarPanel%2522%253A%2522EXPLORER%2522%252C%2522rootPanelGroup%2522%253A%257B%2522direction%2522%253A%2522horizontal%2522%252C%2522contentType%2522%253A%2522UNKNOWN%2522%252C%2522type%2522%253A%2522PANEL_GROUP%2522%252C%2522id%2522%253A%2522ROOT_LAYOUT%2522%252C%2522panels%2522%253A%255B%257B%2522type%2522%253A%2522PANEL_GROUP%2522%252C%2522contentType%2522%253A%2522UNKNOWN%2522%252C%2522direction%2522%253A%2522vertical%2522%252C%2522id%2522%253A%2522clzd7zbvq00063b6m7xgfjb2f%2522%252C%2522sizes%2522%253A%255B100%252C0%255D%252C%2522panels%2522%253A%255B%257B%2522type%2522%253A%2522PANEL_GROUP%2522%252C%2522contentType%2522%253A%2522EDITOR%2522%252C%2522direction%2522%253A%2522horizontal%2522%252C%2522id%2522%253A%2522EDITOR%2522%252C%2522panels%2522%253A%255B%257B%2522type%2522%253A%2522PANEL%2522%252C%2522contentType%2522%253A%2522EDITOR%2522%252C%2522id%2522%253A%2522clzd7zbvq00023b6mgx1uoklz%2522%257D%255D%257D%252C%257B%2522type%2522%253A%2522PANEL_GROUP%2522%252C%2522contentType%2522%253A%2522SHELLS%2522%252C%2522direction%2522%253A%2522horizontal%2522%252C%2522id%2522%253A%2522SHELLS%2522%252C%2522panels%2522%253A%255B%257B%2522type%2522%253A%2522PANEL%2522%252C%2522contentType%2522%253A%2522SHELLS%2522%252C%2522id%2522%253A%2522clzd7zbvq00033b6m564o678x%2522%257D%255D%252C%2522sizes%2522%253A%255B100%255D%257D%255D%257D%252C%257B%2522type%2522%253A%2522PANEL_GROUP%2522%252C%2522contentType%2522%253A%2522DEVTOOLS%2522%252C%2522direction%2522%253A%2522vertical%2522%252C%2522id%2522%253A%2522DEVTOOLS%2522%252C%2522panels%2522%253A%255B%257B%2522type%2522%253A%2522PANEL%2522%252C%2522contentType%2522%253A%2522DEVTOOLS%2522%252C%2522id%2522%253A%2522clzd7zbvq00053b6m55v1pi44%2522%257D%255D%252C%2522sizes%2522%253A%255B100%255D%257D%255D%252C%2522sizes%2522%253A%255B51.93090270419763%252C48.06909729580237%255D%257D%252C%2522tabbedPanels%2522%253A%257B%2522clzd7zbvq00023b6mgx1uoklz%2522%253A%257B%2522tabs%2522%253A%255B%257B%2522id%2522%253A%2522clzd7zbvq00013b6mpa72fkfn%2522%252C%2522mode%2522%253A%2522permanent%2522%252C%2522type%2522%253A%2522FILE%2522%252C%2522filepath%2522%253A%2522%252Fsrc%252Findex.tsx%2522%252C%2522state%2522%253A%2522IDLE%2522%257D%255D%252C%2522id%2522%253A%2522clzd7zbvq00023b6mgx1uoklz%2522%252C%2522activeTabId%2522%253A%2522clzd7zbvq00013b6mpa72fkfn%2522%257D%252C%2522clzd7zbvq00053b6m55v1pi44%2522%253A%257B%2522id%2522%253A%2522clzd7zbvq00053b6m55v1pi44%2522%252C%2522tabs%2522%253A%255B%257B%2522id%2522%253A%2522clzd7zbvq00043b6mzy0ixmxm%2522%252C%2522mode%2522%253A%2522permanent%2522%252C%2522type%2522%253A%2522UNASSIGNED_PORT%2522%252C%2522port%2522%253A0%252C%2522path%2522%253A%2522%252F%2522%257D%255D%252C%2522activeTabId%2522%253A%2522clzd7zbvq00043b6mzy0ixmxm%2522%257D%252C%2522clzd7zbvq00033b6m564o678x%2522%253A%257B%2522tabs%2522%253A%255B%255D%252C%2522id%2522%253A%2522clzd7zbvq00033b6m564o678x%2522%257D%257D%252C%2522showDevtools%2522%253Atrue%252C%2522showShells%2522%253Afalse%252C%2522showSidebar%2522%253Afalse%252C%2522sidebarPanelSize%2522%253A0%257D"
               target="_blank"
               rel="noreferrer"
-              className="flex  hover:text-blue-600 hover:underline"
+              className="flex  text-blue-600 hover:underline"
             >
-              CodeSandbox <CodeSandBoxIcon className="h-5 ml-2 " />
+              Try on CodeSandbox <CodeSandBoxIcon className="h-5 ml-2 " />
             </a>
             <div className="mx-3 hidden h-5 w-px bg-slate-900/10 sm:block"></div>
             <nav
@@ -97,7 +99,7 @@ export const FastTrackUploadPage = (props: {
           {display === "demo" ? (
             <div className="">
               <div className="text-xl text-gray-500">
-                <ol className="list-decimal text-2xl list-inside space-y-6">
+                <ol className="list-decimal text-xl list-inside space-y-6">
                   <li>
                     Download
                     <a
@@ -121,7 +123,9 @@ export const FastTrackUploadPage = (props: {
 
                 <Disclosure>
                   <DisclosureButton className="py-2 flex justify-between w-full">
-                    <span className="flex">What is Dromo doing this time?</span>
+                    <span className="flex text-xl">
+                      What is Dromo doing this time?
+                    </span>
                     <ChevronDownIcon className="h-6 w-6" aria-hidden="true" />
                   </DisclosureButton>
                   <DisclosurePanel>
@@ -179,7 +183,31 @@ export const FastTrackUploadPage = (props: {
               </div>
             </div>
           ) : (
-            <CodeBlock children={FastTrackUploaderCode} codeType="javascript" />
+            <div>
+              <div className="w-full flex flex-row justify-end">
+                <div className="flex">
+                  <select
+                    id="location"
+                    name="location"
+                    value={codeLang}
+                    className="mb-5 block  rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600"
+                    onChange={(e) => setCodeLang(e.target.value)}
+                  >
+                    {["React", "JavaScript"].map((lang) => (
+                      <option>{lang}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <CodeBlock
+                children={
+                  codeLang === "React"
+                    ? FastTrackUploaderCodeReact
+                    : FastTrackUploaderCodeJS
+                }
+                codeType="javascript"
+              />
+            </div>
           )}
         </div>
       </div>

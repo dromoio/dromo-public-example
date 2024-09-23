@@ -75,7 +75,8 @@ export const FastTrackUploader = (props: {
       ]}
       settings={{
         importIdentifier: "Fast Track Contacts Demo",
-        developmentMode: true,
+        developmentMode: false,
+        maxRecords: 200,
         uploadStep: {
           helpText:
             "Drag and drop the sample file. You can customize this help text. It even supports HTML so you can style it, embed videos, etc.",
