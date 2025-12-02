@@ -123,6 +123,26 @@ export default function Navbar(props: {
                       <Menu.Item>
                         {({ active }) => (
                           <a
+                            href="https://developer.dromo.io/changelog"
+                            target="_blank"
+                            rel="noreferrer"
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
+                          >
+                            <span className="flex items-center gap-2">
+                              What's New
+                              <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
+                                New
+                              </span>
+                            </span>
+                          </a>
+                        )}
+                      </Menu.Item>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
                             href="https://www.dromo.io/pricing"
                             target="_blank"
                             rel="noreferrer"
