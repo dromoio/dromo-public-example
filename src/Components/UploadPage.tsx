@@ -354,15 +354,20 @@ export const UploadPage = (props: {
     enableUserTransformations: true,
     autoMapHeaders: false,
     invalidDataBehavior: "REMOVE_INVALID_ROWS",
-    styleOverrides: stylePresets.default,
   });
 
   const applyTheme = (theme: string) => {
     setSelectedTheme(theme);
-    setConfig({
-      ...config,
-      styleOverrides: stylePresets[theme],
-    });
+    if (theme === "default") {
+      const { styleOverrides, ...rest } = config;
+      setConfig(rest);
+    } else {
+      const { name, description, previewColor, ...styleOverrides } = stylePresets[theme];
+      setConfig({
+        ...config,
+        styleOverrides,
+      });
+    }
   };
 
   return (

@@ -88,6 +88,19 @@ export const Uploader = (props: {
             },
           ],
         },
+        {
+          label: "Tags",
+          key: "tags",
+          // multi-select allows users to choose multiple values from predefined options
+          type: "multi-select" as any,
+          selectOptions: [
+            { label: "VIP", value: "vip" },
+            { label: "Enterprise", value: "enterprise" },
+            { label: "Startup", value: "startup" },
+            { label: "Partner", value: "partner" },
+            { label: "Churned", value: "churned" },
+          ],
+        },
       ]}
       settings={{
         importIdentifier: "Contacts",
@@ -104,7 +117,9 @@ export const Uploader = (props: {
         reviewStep: {
           enableUserTransformations: config.enableUserTransformations ?? true,
         },
-        styleOverrides: config.styleOverrides as any,
+        ...(config.styleOverrides && Object.keys(config.styleOverrides).length > 0
+          ? { styleOverrides: config.styleOverrides as any }
+          : {}),
       }}
       user={{
         id: "1",

@@ -256,6 +256,10 @@ export const FastTrackUploadPage = (props: {
 
   const applyTheme = (themeKey: string) => {
     setSelectedTheme(themeKey);
+    if (themeKey === "default") {
+      setConfig({});
+      return;
+    }
     const theme = stylePresets[themeKey];
     const { name, description, previewColor, ...styleOverrides } = theme;
     setConfig({ styleOverrides });

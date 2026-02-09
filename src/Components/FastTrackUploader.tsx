@@ -82,6 +82,19 @@ export const FastTrackUploader = (props: {
             },
           ],
         },
+        {
+          label: "Tags",
+          key: "tags",
+          // multi-select allows users to choose multiple values from predefined options
+          type: "multi-select" as any,
+          selectOptions: [
+            { label: "VIP", value: "vip" },
+            { label: "Enterprise", value: "enterprise" },
+            { label: "Startup", value: "startup" },
+            { label: "Partner", value: "partner" },
+            { label: "Churned", value: "churned" },
+          ],
+        },
       ]}
       settings={{
         importIdentifier: "Fast Track Contacts Demo",
@@ -97,7 +110,9 @@ export const FastTrackUploader = (props: {
           headerRowOverride: 0,
         },
         invalidDataBehavior: "REMOVE_INVALID_ROWS",
-        styleOverrides: config.styleOverrides as any,
+        ...(config.styleOverrides && Object.keys(config.styleOverrides).length > 0
+          ? { styleOverrides: config.styleOverrides as any }
+          : {}),
       }}
       user={{
         id: "1",
