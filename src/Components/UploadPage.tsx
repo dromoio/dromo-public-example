@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Tabs } from "../App";
-import { Uploader } from "./Uploader";
+import { Uploader, UploaderConfig } from "./Uploader";
 import { CodeBlock } from "./CodeBlock";
 import { format as prettyFormat } from "pretty-format";
 import { ReactComponent as CodeSandBoxIcon } from "../assets/icons/codesandbox.svg";
@@ -20,6 +20,300 @@ export function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 type DisplayOptions = "demo" | "code";
+
+// Preset Style Themes using Dromo's actual style properties
+type StylePreset = {
+  // Actual Dromo style properties
+  [key: string]: any;
+};
+
+const stylePresets: Record<string, StylePreset> = {
+  default: {
+    name: "Default",
+    description: "Royal blue with clean styling",
+    previewColor: "#4169E1",
+    global: {
+      backgroundColor: "#EEF2FF",
+      primaryTextColor: "#1F2937",
+      secondaryTextColor: "#6B7280",
+      textColor: "#374151",
+      successColor: "#10B981",
+      warningColor: "#F59E0B",
+      borderColor: "#C7D2FE",
+      borderRadius: "12px",
+    },
+    primaryButton: {
+      backgroundColor: "#4169E1",
+      textColor: "#FFFFFF",
+      borderRadius: "12px",
+      hoverBackgroundColor: "#2F4B99",
+      hoverTextColor: "#FFFFFF",
+    },
+    dataTable: {
+      headerBackgroundColor: "#F3F4F6",
+      headerTextColor: "#1F2937",
+      headerFontWeight: "600",
+      cellBackgroundColor: "#FFFFFF",
+      cellTextColor: "#374151",
+      cellHoverBackgroundColor: "#F9FAFB",
+      cellHoverTextColor: "#1F2937",
+      dividerColor: "#E5E7EB",
+      borderColor: "#E5E7EB",
+      accentColor: "#4169E1",
+    },
+  },
+  dark: {
+    name: "Dark Mode",
+    description: "Complete dark theme with blue accents",
+    previewColor: "#3b82f6",
+    global: {
+      backgroundColor: "#1a1a1a",
+      primaryTextColor: "#f9fafb",
+      secondaryTextColor: "#9ca3af",
+      textColor: "#e5e7eb",
+      successColor: "#10b981",
+      warningColor: "#f59e0b",
+      borderColor: "#374151",
+      borderRadius: "8px",
+      backdropBlur: true
+    },
+    // Dark mode cards
+    card: {
+      backgroundColor: "#1f2937",
+      containerBackgroundColor: "#111827",
+      borderColor: "#374151",
+      borderWidth: "1px",
+      borderRadius: "0.75rem",
+      textColor: "#f9fafb",
+      expandedBackgroundColor: "#111827",
+      iconColor: "#9ca3af"
+    },
+    // Dark mode data table
+    dataTable: {
+      // Headers
+      headerBackgroundColor: "#111827",
+      headerTextColor: "#f9fafb",
+      headerFontWeight: "500",
+      headerActiveBackgroundColor: "#1e3a8a",
+      headerActiveTextColor: "#ffffff",
+      headerHighlightedBackgroundColor: "#1e40af",
+      headerHighlightedTextColor: "#ffffff",
+      // Row headers
+      rowHeaderBackgroundColor: "#111827",
+      rowHeaderTextColor: "#f9fafb",
+      cornerHeaderBackgroundColor: "#111827",
+      // Cells
+      cellBackgroundColor: "#1f2937",
+      cellTextColor: "#e5e7eb",
+      cellHoverBackgroundColor: "#374151",
+      cellHoverTextColor: "#f9fafb",
+      oddRowBackgroundColor: "#374151",
+      // Selection
+      cellSelectionBorderColor: "#3b82f6",
+      cellSelectionBackgroundColor: "rgba(59, 130, 246, 0.1)",
+      rowSelectedBackgroundColor: "rgba(59, 130, 246, 0.3)",
+      rowSelectedBorderColor: "#3b82f6",
+      // Borders
+      borderColor: "#374151",
+      dividerColor: "#4b5563",
+      // Cell states
+      errorCellBackgroundColor: "#7f1d1d",
+      errorCellHoverBackgroundColor: "#991b1b",
+      warningCellBackgroundColor: "#713f12",
+      warningCellHoverBackgroundColor: "#854d0e",
+      infoCellBackgroundColor: "#1e3a8a",
+      infoCellHoverBackgroundColor: "#1e40af",
+      // Read-only
+      readOnlyCellBackgroundColor: "#374151",
+      readOnlyCellTextColor: "#9ca3af",
+      accentColor: "#3b82f6"
+    },
+    // Dark mode buttons
+    primaryButton: {
+      backgroundColor: "#3b82f6",
+      textColor: "#ffffff",
+      borderRadius: "0.375rem",
+      hoverBackgroundColor: "#2563eb",
+      hoverTextColor: "#ffffff"
+    },
+    secondaryButton: {
+      backgroundColor: "#374151",
+      textColor: "#f9fafb",
+      border: "1px solid #4b5563",
+      borderRadius: "0.375rem",
+      hoverBackgroundColor: "#4b5563",
+      hoverTextColor: "#f9fafb"
+    },
+    tertiaryButton: {
+      backgroundColor: "transparent",
+      textColor: "#3b82f6",
+      border: "1px solid transparent",
+      borderRadius: "0.375rem",
+      hoverBackgroundColor: "#1f2937",
+      hoverTextColor: "#60a5fa"
+    },
+    // Dark mode dropdowns
+    dropdown: {
+      backgroundColor: "#1f2937",
+      borderColor: "#374151",
+      textColor: "#f9fafb",
+      menuBackgroundColor: "#1f2937",
+      optionHoverBackgroundColor: "#374151",
+      optionSelectedBackgroundColor: "#4b5563"
+    },
+    // Dark mode dropzone
+    dropzone: {
+      borderWidth: 2,
+      borderRadius: 8,
+      backgroundColor: "#1f2937",
+      borderColor: "#4b5563",
+      borderStyle: "dashed",
+      color: "#f9fafb"
+    },
+    // Dark mode stepper
+    stepperBar: {
+      backgroundColor: "#111827",
+      borderBottom: "1px solid #374151",
+      currentColor: "#3b82f6",
+      completeColor: "#10b981",
+      incompleteColor: "#6b7280",
+      completeFontWeight: "600",
+      currentFontWeight: "600"
+    },
+    // Dark mode overlay
+    modalOverlay: {
+      backgroundColor: "#000000",
+      opacity: "75"
+    }
+  },
+  professional: {
+    name: "Professional",
+    description: "Clean business aesthetic",
+    previewColor: "#2563EB",
+    global: {
+      backgroundColor: "#DBEAFE",
+      primaryTextColor: "#0F172A",
+      secondaryTextColor: "#64748B",
+      textColor: "#1E3A8A",
+      successColor: "#10B981",
+      warningColor: "#F59E0B",
+      borderColor: "#93C5FD",
+      borderRadius: "6px",
+    },
+    primaryButton: {
+      backgroundColor: "#2563EB",
+      textColor: "#FFFFFF",
+      borderRadius: "6px",
+      hoverBackgroundColor: "#1E40AF",
+      hoverTextColor: "#FFFFFF",
+    },
+    secondaryButton: {
+      backgroundColor: "#F1F5F9",
+      textColor: "#334155",
+      border: "1px solid #CBD5E1",
+      borderRadius: "6px",
+      hoverBackgroundColor: "#E2E8F0",
+      hoverTextColor: "#1E293B",
+    },
+    dataTable: {
+      headerBackgroundColor: "#1E293B",
+      headerTextColor: "#FFFFFF",
+      headerFontWeight: "600",
+      cellBackgroundColor: "#FFFFFF",
+      cellTextColor: "#0F172A",
+      cellHoverBackgroundColor: "#F1F5F9",
+      cellHoverTextColor: "#0F172A",
+      dividerColor: "#E2E8F0",
+      borderColor: "#CBD5E1",
+      accentColor: "#2563EB",
+    },
+  },
+  vibrant: {
+    name: "Vibrant",
+    description: "Bold and colorful",
+    previewColor: "#EC4899",
+    global: {
+      backgroundColor: "#FCE7F3",
+      primaryTextColor: "#831843",
+      secondaryTextColor: "#BE185D",
+      textColor: "#9F1239",
+      successColor: "#10B981",
+      warningColor: "#F59E0B",
+      borderColor: "#F9A8D4",
+      borderRadius: "16px",
+    },
+    primaryButton: {
+      backgroundColor: "#EC4899",
+      textColor: "#FFFFFF",
+      borderRadius: "16px",
+      hoverBackgroundColor: "#DB2777",
+      hoverTextColor: "#FFFFFF",
+    },
+    secondaryButton: {
+      backgroundColor: "#FCE7F3",
+      textColor: "#BE185D",
+      border: "1px solid #F9A8D4",
+      borderRadius: "16px",
+      hoverBackgroundColor: "#FBCFE8",
+      hoverTextColor: "#9F1239",
+    },
+    dataTable: {
+      headerBackgroundColor: "#DB2777",
+      headerTextColor: "#FFFFFF",
+      headerFontWeight: "600",
+      cellBackgroundColor: "#FFFFFF",
+      cellTextColor: "#831843",
+      cellHoverBackgroundColor: "#FCE7F3",
+      cellHoverTextColor: "#831843",
+      dividerColor: "#F9A8D4",
+      borderColor: "#F9A8D4",
+      accentColor: "#EC4899",
+    },
+  },
+  minimal: {
+    name: "Minimal",
+    description: "Simple black and white",
+    previewColor: "#000000",
+    global: {
+      backgroundColor: "#F3F4F6",
+      primaryTextColor: "#000000",
+      secondaryTextColor: "#6B7280",
+      textColor: "#1F2937",
+      successColor: "#10B981",
+      warningColor: "#F59E0B",
+      borderColor: "#D1D5DB",
+      borderRadius: "4px",
+    },
+    primaryButton: {
+      backgroundColor: "#000000",
+      textColor: "#FFFFFF",
+      borderRadius: "4px",
+      hoverBackgroundColor: "#374151",
+      hoverTextColor: "#FFFFFF",
+    },
+    secondaryButton: {
+      backgroundColor: "#FFFFFF",
+      textColor: "#000000",
+      border: "1px solid #E5E7EB",
+      borderRadius: "4px",
+      hoverBackgroundColor: "#F9FAFB",
+      hoverTextColor: "#000000",
+    },
+    dataTable: {
+      headerBackgroundColor: "#F9FAFB",
+      headerTextColor: "#000000",
+      headerFontWeight: "600",
+      cellBackgroundColor: "#FFFFFF",
+      cellTextColor: "#000000",
+      cellHoverBackgroundColor: "#F3F4F6",
+      cellHoverTextColor: "#000000",
+      dividerColor: "#E5E7EB",
+      borderColor: "#E5E7EB",
+      accentColor: "#000000",
+    },
+  },
+};
+
 const hightlights = [
   {
     summary: "AI Assisted Mapping",
@@ -54,6 +348,27 @@ export const UploadPage = (props: {
 }) => {
   const [display, setDisplay] = useState<DisplayOptions>("demo");
   const [codeLang, setCodeLang] = useState<string>("React");
+  const [showConfig, setShowConfig] = useState<boolean>(false);
+  const [selectedTheme, setSelectedTheme] = useState<string>("default");
+  const [config, setConfig] = useState<UploaderConfig>({
+    enableUserTransformations: true,
+    autoMapHeaders: false,
+    invalidDataBehavior: "REMOVE_INVALID_ROWS",
+  });
+
+  const applyTheme = (theme: string) => {
+    setSelectedTheme(theme);
+    if (theme === "default") {
+      const { styleOverrides, ...rest } = config;
+      setConfig(rest);
+    } else {
+      const { name, description, previewColor, ...styleOverrides } = stylePresets[theme];
+      setConfig({
+        ...config,
+        styleOverrides,
+      });
+    }
+  };
 
   return (
     <div>
@@ -66,7 +381,7 @@ export const UploadPage = (props: {
               className={"text-blue-600 font-bold no-underline hover:underline"}
               onClick={() => props.setTab("fastTrack")}
             >
-              🏎️ 🏁 Fast Track Import Demo
+              Fast Track Import Demo
             </a>{" "}
             to see Dromo import data in just one click!
           </p>
@@ -75,7 +390,7 @@ export const UploadPage = (props: {
       <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow grid grid-cols-[1fr,auto] items-center">
         <div className="border-b border-gray-200 bg-white px-4 py-5 sm:px-6 flex flex-row justify-between ">
           <div className="min-w-0 ml-4 mt-2">
-            <h1 className="text-xl font-semibold leading-6 text-gray-900">
+            <h1 className="text-2xl font-bold leading-6 text-gray-900 mb-1">
               Dromo Importer Demo
             </h1>
           </div>
@@ -114,26 +429,105 @@ export const UploadPage = (props: {
           {display === "demo" ? (
             <div className="">
               <div className="text-xl text-gray-500">
-                <ol className="list-decimal text-xl list-inside space-y-6">
-                  <li>
-                    Download
-                    <a
-                      className="text-blue-600  no-underline hover:underline"
-                      href="data/contacts.csv"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {"  "}
-                      the example CSV export of contacts.{" "}
-                    </a>
-                  </li>
-                  <li>Click "Import with Dromo" and upload the sample CSV</li>
-                  <div>
-                    <div className="py-3 flex justify-center">
-                      <Uploader setResults={props.setUploadData} />
+                <div className="mb-8 space-y-6">
+                  <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 bg-blue-600 text-white rounded-full font-bold">1</span>
+                    <div className="flex-1">
+                      <p className="text-lg text-gray-900 mb-2">Download the sample CSV file</p>
+                      <a
+                        className="inline-flex items-center gap-2 text-blue-600 font-medium no-underline hover:underline"
+                        href="data/contacts.csv"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        contacts.csv
+                      </a>
+                      <p className="text-sm text-gray-600 mt-1">This file contains sample contact data with intentional issues to showcase Dromo's features</p>
                     </div>
                   </div>
-                </ol>
+
+                  <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 bg-blue-600 text-white rounded-full font-bold">2</span>
+                    <div className="flex-1">
+                      <p className="text-lg text-gray-900 mb-3">Customize settings and click "Import with Dromo"</p>
+
+                      {/* Configuration Toggle */}
+                      <button
+                        onClick={() => setShowConfig(!showConfig)}
+                        className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-800"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {showConfig ? 'Hide' : 'Show'} Configuration Panel
+                      </button>
+
+                      {/* Configuration Panel */}
+                      {showConfig && (
+                        <div className="mb-4 p-4 bg-white border border-gray-300 rounded-lg space-y-4">
+                          <h4 className="font-semibold text-gray-900 mb-3">Dromo Settings</h4>
+
+                          {/* Feature Toggles */}
+
+                          <hr className="border-gray-200" />
+
+                          {/* Style Theme Presets */}
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-3">Style Theme</h4>
+                            <p className="text-xs text-gray-500 mb-3">Choose a pre-built theme to customize the importer appearance</p>
+                            <div className="grid grid-cols-2 gap-2">
+                              {Object.entries(stylePresets).map(([key, preset]) => (
+                                <button
+                                  key={key}
+                                  onClick={() => applyTheme(key)}
+                                  className={`p-3 rounded-lg border-2 transition-all text-left ${
+                                    selectedTheme === key
+                                      ? "border-indigo-600 bg-indigo-50"
+                                      : "border-gray-200 hover:border-indigo-300 bg-white"
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <div
+                                      className="w-5 h-5 rounded-full border-2 border-gray-300 shadow-sm"
+                                      style={{ backgroundColor: preset.global?.backgroundColor || "#FFFFFF" }}
+                                    />
+                                    <span className="text-sm font-semibold text-gray-900">
+                                      {preset.name}
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-gray-600 mb-2">{preset.description}</p>
+                                  <div
+                                    className="w-full h-2 rounded"
+                                    style={{ backgroundColor: preset.global?.backgroundColor || "#FFFFFF" }}
+                                  />
+                                </button>
+                              ))}
+                            </div>
+                            <p className="text-xs text-gray-500 mt-3">
+                              View all available style properties in the{" "}
+                              <a
+                                href="https://developer.dromo.io/guides/custom-styling"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-indigo-600 hover:underline"
+                              >
+                                styling documentation
+                              </a>
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex justify-start">
+                        <Uploader setResults={props.setUploadData} config={config} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                 <Disclosure>
                   <DisclosureButton className="py-2 flex justify-between w-full">
@@ -152,9 +546,11 @@ export const UploadPage = (props: {
                             <>
                               <dt>
                                 <DisclosureButton className="flex w-full items-start justify-between text-left text-gray-900">
-                                  <span className="text-base  leading-7">
-                                    {highlight.summary}
-                                  </span>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-base leading-7">
+                                      {highlight.summary}
+                                    </span>
+                                  </div>
                                   <span className="ml-6 flex h-7 items-center">
                                     {open ? (
                                       <MinusSmallIcon
@@ -184,13 +580,26 @@ export const UploadPage = (props: {
                 </Disclosure>
                 <br />
                 {props.uploadData.length > 0 ? (
-                  <CodeBlock
-                    children={prettyFormat(props.uploadData, {
-                      printBasicPrototype: false,
-                    })}
-                    codeType="json"
-                    showCopyButton={false}
-                  />
+                  <div className="mt-6">
+                    <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3 className="text-lg font-semibold text-green-900">Import Successful!</h3>
+                      </div>
+                      <p className="text-sm text-green-800">
+                        Successfully imported {props.uploadData.length} records. Below is the cleaned and validated data returned from Dromo.
+                      </p>
+                    </div>
+                    <CodeBlock
+                      children={prettyFormat(props.uploadData, {
+                        printBasicPrototype: false,
+                      })}
+                      codeType="json"
+                      showCopyButton={false}
+                    />
+                  </div>
                 ) : null}
               </div>
             </div>

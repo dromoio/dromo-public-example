@@ -1,6 +1,24 @@
 import DromoUploader from "dromo-uploader-react";
 import { ReactComponent as UploadIcon } from "../assets/icons/upload.svg";
-export const Uploader = (props: { setResults: (data: any[]) => void }) => {
+
+export interface UploaderConfig {
+  enableUserTransformations?: boolean;
+  autoMapHeaders?: boolean;
+  invalidDataBehavior?: "REMOVE_INVALID_ROWS" | "BLOCK_SUBMIT" | "INCLUDE_INVALID_ROWS";
+  styleOverrides?: {
+    primaryColor?: string;
+    primaryTextColor?: string;
+    buttonBorderRadius?: string;
+    [key: string]: any;
+  };
+}
+
+export const Uploader = (props: {
+  setResults: (data: any[]) => void;
+  config?: UploaderConfig;
+}) => {
+  const config = props.config || {};
+
   return (
     <DromoUploader
       // Get a free license key: https://dashboard.dromo.io/
@@ -70,6 +88,19 @@ export const Uploader = (props: { setResults: (data: any[]) => void }) => {
             },
           ],
         },
+        {
+          label: "Tags",
+          key: "tags",
+          // multi-select allows users to choose multiple values from predefined options
+          type: "multi-select" as any,
+          selectOptions: [
+            { label: "VIP", value: "vip" },
+            { label: "Enterprise", value: "enterprise" },
+            { label: "Startup", value: "startup" },
+            { label: "Partner", value: "partner" },
+            { label: "Churned", value: "churned" },
+          ],
+        },
       ]}
       settings={{
         importIdentifier: "Contacts",
@@ -81,9 +112,14 @@ export const Uploader = (props: { setResults: (data: any[]) => void }) => {
             "Drag and drop the sample file. You can customize this help text. It even supports HTML so you can style it, embed videos, etc.",
         },
         backendSyncMode: "MAPPINGS_ONLY",
-        autoMapHeaders: false,
-        invalidDataBehavior: "REMOVE_INVALID_ROWS",
-        reviewStep: { enableUserTransformations: true },
+        autoMapHeaders: config.autoMapHeaders ?? false,
+        invalidDataBehavior: config.invalidDataBehavior ?? "REMOVE_INVALID_ROWS",
+        reviewStep: {
+          enableUserTransformations: config.enableUserTransformations ?? true,
+        },
+        ...(config.styleOverrides && Object.keys(config.styleOverrides).length > 0
+          ? { styleOverrides: config.styleOverrides as any }
+          : {}),
       }}
       user={{
         id: "1",
