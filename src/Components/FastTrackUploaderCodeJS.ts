@@ -64,6 +64,19 @@ const fields= [
       },
     ],
   },
+  {
+    label: "Tags",
+    key: "tags",
+    // multi-select allows users to choose multiple values from predefined options
+    type: "multi-select",
+    selectOptions: [
+      { label: "VIP", value: "vip" },
+      { label: "Enterprise", value: "enterprise" },
+      { label: "Startup", value: "startup" },
+      { label: "Partner", value: "partner" },
+      { label: "Churned", value: "churned" },
+    ],
+  },
 ];
 const settings= {
   importIdentifier: "Fast Track Contacts 2",
