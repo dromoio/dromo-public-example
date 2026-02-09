@@ -13,13 +13,210 @@ import {
   MinusSmallIcon,
   PlusSmallIcon,
 } from "@heroicons/react/24/outline";
-import { FastTrackUploader } from "./FastTrackUploader";
+import { FastTrackUploader, FastTrackUploaderConfig } from "./FastTrackUploader";
 import { FastTrackUploaderCodeReact } from "./FastTrackUploaderCodeReact";
 import { FastTrackUploaderCodeJS } from "./FastTrackUploaderCodeJS";
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 type DisplayOptions = "demo" | "code";
+
+// Preset Style Themes using Dromo's actual style properties
+type StylePreset = {
+  name: string;
+  description: string;
+  previewColor: string;
+  [key: string]: any;
+};
+
+const stylePresets: Record<string, StylePreset> = {
+  default: {
+    name: "Default",
+    description: "Royal blue with clean styling",
+    previewColor: "#4169E1",
+    global: {
+      backgroundColor: "#EEF2FF",
+      primaryTextColor: "#1F2937",
+      secondaryTextColor: "#6B7280",
+      textColor: "#374151",
+      successColor: "#10B981",
+      warningColor: "#F59E0B",
+      borderColor: "#C7D2FE",
+      borderRadius: "12px",
+    },
+    primaryButton: {
+      backgroundColor: "#4169E1",
+      textColor: "#FFFFFF",
+      borderRadius: "12px",
+      hoverBackgroundColor: "#2F4B99",
+      hoverTextColor: "#FFFFFF",
+    },
+    dataTable: {
+      headerBackgroundColor: "#F3F4F6",
+      headerTextColor: "#1F2937",
+      headerFontWeight: "600",
+      cellBackgroundColor: "#FFFFFF",
+      cellTextColor: "#374151",
+      cellHoverBackgroundColor: "#F9FAFB",
+      cellHoverTextColor: "#1F2937",
+      dividerColor: "#E5E7EB",
+      borderColor: "#E5E7EB",
+      accentColor: "#4169E1",
+    },
+  },
+  dark: {
+    name: "Dark Mode",
+    description: "Complete dark theme with blue accents",
+    previewColor: "#3b82f6",
+    global: {
+      backgroundColor: "#1a1a1a",
+      primaryTextColor: "#f9fafb",
+      secondaryTextColor: "#9ca3af",
+      textColor: "#e5e7eb",
+      successColor: "#10b981",
+      warningColor: "#f59e0b",
+      borderColor: "#374151",
+      borderRadius: "8px",
+      backdropBlur: true,
+    },
+    card: {
+      backgroundColor: "#1f2937",
+      containerBackgroundColor: "#111827",
+      borderColor: "#374151",
+      borderWidth: "1px",
+      borderRadius: "0.75rem",
+      textColor: "#f9fafb",
+      expandedBackgroundColor: "#111827",
+      iconColor: "#9ca3af"
+    },
+    dataTable: {
+      headerBackgroundColor: "#111827",
+      headerTextColor: "#f9fafb",
+      headerFontWeight: "500",
+      headerActiveBackgroundColor: "#1e3a8a",
+      headerActiveTextColor: "#ffffff",
+      headerHighlightedBackgroundColor: "#1e40af",
+      headerHighlightedTextColor: "#ffffff",
+      rowHeaderBackgroundColor: "#111827",
+      rowHeaderTextColor: "#f9fafb",
+      cornerHeaderBackgroundColor: "#111827",
+      cellBackgroundColor: "#1f2937",
+      cellTextColor: "#e5e7eb",
+      cellHoverBackgroundColor: "#374151",
+      cellHoverTextColor: "#f9fafb",
+      oddRowBackgroundColor: "#374151",
+      cellSelectionBorderColor: "#3b82f6",
+      cellSelectionBackgroundColor: "rgba(59, 130, 246, 0.1)",
+      rowSelectedBackgroundColor: "rgba(59, 130, 246, 0.3)",
+      rowSelectedBorderColor: "#3b82f6",
+      borderColor: "#374151",
+      dividerColor: "#4b5563",
+      errorCellBackgroundColor: "#7f1d1d",
+      errorCellHoverBackgroundColor: "#991b1b",
+      warningCellBackgroundColor: "#713f12",
+      warningCellHoverBackgroundColor: "#854d0e",
+      infoCellBackgroundColor: "#1e3a8a",
+      infoCellHoverBackgroundColor: "#1e40af",
+      readOnlyCellBackgroundColor: "#374151",
+      readOnlyCellTextColor: "#9ca3af",
+      accentColor: "#3b82f6"
+    },
+    primaryButton: {
+      backgroundColor: "#3b82f6",
+      textColor: "#ffffff",
+      borderRadius: "0.375rem",
+      hoverBackgroundColor: "#2563eb",
+      hoverTextColor: "#ffffff"
+    },
+    secondaryButton: {
+      backgroundColor: "#374151",
+      textColor: "#f9fafb",
+      border: "1px solid #4b5563",
+      borderRadius: "0.375rem",
+      hoverBackgroundColor: "#4b5563",
+      hoverTextColor: "#f9fafb"
+    },
+    tertiaryButton: {
+      backgroundColor: "transparent",
+      textColor: "#3b82f6",
+      border: "1px solid transparent",
+      borderRadius: "0.375rem",
+      hoverBackgroundColor: "#1f2937",
+      hoverTextColor: "#60a5fa"
+    },
+    dropdown: {
+      backgroundColor: "#1f2937",
+      borderColor: "#374151",
+      textColor: "#f9fafb",
+      menuBackgroundColor: "#1f2937",
+      optionHoverBackgroundColor: "#374151",
+      optionSelectedBackgroundColor: "#4b5563"
+    },
+    dropzone: {
+      borderWidth: 2,
+      borderRadius: 8,
+      backgroundColor: "#1f2937",
+      borderColor: "#4b5563",
+      borderStyle: "dashed",
+      color: "#f9fafb"
+    },
+    stepperBar: {
+      backgroundColor: "#111827",
+      borderBottom: "1px solid #374151",
+      currentColor: "#3b82f6",
+      completeColor: "#10b981",
+      incompleteColor: "#6b7280",
+      completeFontWeight: "600",
+      currentFontWeight: "600"
+    },
+    modalOverlay: {
+      backgroundColor: "#000000",
+      opacity: "75"
+    }
+  },
+  professional: {
+    name: "Professional",
+    description: "Clean business aesthetic",
+    previewColor: "#2563EB",
+    global: {
+      backgroundColor: "#DBEAFE",
+      primaryTextColor: "#0F172A",
+      secondaryTextColor: "#64748B",
+      textColor: "#1E3A8A",
+      successColor: "#10B981",
+      warningColor: "#F59E0B",
+      borderColor: "#93C5FD",
+      borderRadius: "6px",
+    },
+    primaryButton: {
+      backgroundColor: "#2563EB",
+      textColor: "#FFFFFF",
+      borderRadius: "6px",
+      hoverBackgroundColor: "#1E40AF",
+      hoverTextColor: "#FFFFFF",
+    },
+    secondaryButton: {
+      backgroundColor: "#F1F5F9",
+      textColor: "#334155",
+      border: "1px solid #CBD5E1",
+      borderRadius: "6px",
+      hoverBackgroundColor: "#E2E8F0",
+      hoverTextColor: "#1E293B",
+    },
+    dataTable: {
+      headerBackgroundColor: "#1E293B",
+      headerTextColor: "#FFFFFF",
+      headerFontWeight: "600",
+      cellBackgroundColor: "#FFFFFF",
+      cellTextColor: "#0F172A",
+      cellHoverBackgroundColor: "#F1F5F9",
+      cellHoverTextColor: "#0F172A",
+      dividerColor: "#E2E8F0",
+      borderColor: "#CBD5E1",
+      accentColor: "#2563EB",
+    },
+  },
+};
 const hightlights = [
   {
     summary: "Step Skipping",
@@ -54,6 +251,19 @@ export const FastTrackUploadPage = (props: {
 }) => {
   const [display, setDisplay] = useState<DisplayOptions>("demo");
   const [codeLang, setCodeLang] = useState<string>("React");
+  const [selectedTheme, setSelectedTheme] = useState<string>("default");
+  const [config, setConfig] = useState<FastTrackUploaderConfig>({});
+
+  const applyTheme = (themeKey: string) => {
+    setSelectedTheme(themeKey);
+    if (themeKey === "default") {
+      setConfig({});
+      return;
+    }
+    const theme = stylePresets[themeKey];
+    const { name, description, previewColor, ...styleOverrides } = theme;
+    setConfig({ styleOverrides });
+  };
 
   return (
     <div>
@@ -115,8 +325,53 @@ export const FastTrackUploadPage = (props: {
                   </li>
                   <li>Click "Import with Dromo" and upload the sample CSV</li>
                   <div>
+                    {/* Style Theme Selector */}
+                    <div className="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <h4 className="font-semibold text-gray-900 mb-3">Style Theme</h4>
+                      <p className="text-xs text-gray-500 mb-3">Choose a pre-built theme to customize the importer appearance</p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {Object.entries(stylePresets).map(([key, preset]) => (
+                          <button
+                            key={key}
+                            onClick={() => applyTheme(key)}
+                            className={`p-3 rounded-lg border-2 transition-all text-left ${
+                              selectedTheme === key
+                                ? "border-indigo-600 bg-indigo-50"
+                                : "border-gray-200 hover:border-indigo-300 bg-white"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 mb-1">
+                              <div
+                                className="w-5 h-5 rounded-full border-2 border-gray-300 shadow-sm"
+                                style={{ backgroundColor: preset.global?.backgroundColor || "#FFFFFF" }}
+                              />
+                              <span className="text-sm font-semibold text-gray-900">
+                                {preset.name}
+                              </span>
+                            </div>
+                            <p className="text-xs text-gray-600 mb-2">{preset.description}</p>
+                            <div
+                              className="w-full h-2 rounded"
+                              style={{ backgroundColor: preset.global?.backgroundColor || "#FFFFFF" }}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs text-gray-500 mt-3">
+                        View all available style properties in the{" "}
+                        <a
+                          href="https://developer.dromo.io/guides/custom-styling"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-indigo-600 hover:underline"
+                        >
+                          styling documentation
+                        </a>
+                      </p>
+                    </div>
+
                     <div className="py-3 flex justify-center">
-                      <FastTrackUploader setResults={props.setUploadData} />
+                      <FastTrackUploader setResults={props.setUploadData} config={config} />
                     </div>
                   </div>
                 </ol>

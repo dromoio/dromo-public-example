@@ -1,8 +1,18 @@
 import DromoUploader from "dromo-uploader-react";
 import { ReactComponent as UploadIcon } from "../assets/icons/upload.svg";
+
+export interface FastTrackUploaderConfig {
+  styleOverrides?: {
+    [key: string]: any;
+  };
+}
+
 export const FastTrackUploader = (props: {
   setResults: (data: any[]) => void;
+  config?: FastTrackUploaderConfig;
 }) => {
+  const config = props.config || {};
+
   return (
     <DromoUploader
       // Get a free license key: https://dashboard.dromo.io/
@@ -72,6 +82,19 @@ export const FastTrackUploader = (props: {
             },
           ],
         },
+        {
+          label: "Tags",
+          key: "tags",
+          // multi-select allows users to choose multiple values from predefined options
+          type: "multi-select" as any,
+          selectOptions: [
+            { label: "VIP", value: "vip" },
+            { label: "Enterprise", value: "enterprise" },
+            { label: "Startup", value: "startup" },
+            { label: "Partner", value: "partner" },
+            { label: "Churned", value: "churned" },
+          ],
+        },
       ]}
       settings={{
         importIdentifier: "Fast Track Contacts Demo",
@@ -87,6 +110,9 @@ export const FastTrackUploader = (props: {
           headerRowOverride: 0,
         },
         invalidDataBehavior: "REMOVE_INVALID_ROWS",
+        ...(config.styleOverrides && Object.keys(config.styleOverrides).length > 0
+          ? { styleOverrides: config.styleOverrides as any }
+          : {}),
       }}
       user={{
         id: "1",
