@@ -104,6 +104,7 @@ export const FastTrackUploader = (props: {
           helpText:
             "Drag and drop the sample file. You can customize this help text. It even supports HTML so you can style it, embed videos, etc.",
         },
+        allowCustomFields: true,
         autoMapHeaders: true,
         backendSyncMode: "FULL_DATA",
         matchingStep: {
