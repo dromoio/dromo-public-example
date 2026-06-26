@@ -117,6 +117,7 @@ export const Uploader = (props: {
         invalidDataBehavior: config.invalidDataBehavior ?? "REMOVE_INVALID_ROWS",
         reviewStep: {
           enableUserTransformations: config.enableUserTransformations ?? true,
+          enableNavigatingErrors: true,
         },
         ...(config.styleOverrides && Object.keys(config.styleOverrides).length > 0
           ? { styleOverrides: config.styleOverrides as any }

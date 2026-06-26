@@ -3,8 +3,9 @@ import "./Styles/App.css";
 import Navbar from "./Components/Navbar";
 import { UploadPage } from "./Components/UploadPage";
 import { FastTrackUploadPage } from "./Components/FastTrackUploadPage";
+import { SchemaBuilderPage } from "./Components/SchemaBuilder/SchemaBuilderPage";
 
-export type Tabs = "upload" | "fastTrack" | "viewUpload";
+export type Tabs = "upload" | "fastTrack" | "builder" | "viewUpload";
 function App() {
   const [tab, setTab] = useState<Tabs>("upload");
   const [uploadData, setUploadData] = useState<any[][]>([]);
@@ -13,6 +14,14 @@ function App() {
   if (tab === "upload") {
     component = (
       <UploadPage
+        uploadData={uploadData}
+        setUploadData={setUploadData}
+        setTab={setTab}
+      />
+    );
+  } else if (tab === "builder") {
+    component = (
+      <SchemaBuilderPage
         uploadData={uploadData}
         setUploadData={setUploadData}
         setTab={setTab}
@@ -30,7 +39,7 @@ function App() {
   return (
     <>
       <Navbar uploadData={uploadData} tab={tab} setTab={setTab} />
-      <section className="main">{component}</section>
+      <section className={tab === "builder" ? "main-wide" : "main"}>{component}</section>
     </>
   );
 }

@@ -9,6 +9,15 @@
   margin-right: auto;
 }
 
+.main-wide {
+  width: 100%;
+  max-width: 1400px;
+  padding: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

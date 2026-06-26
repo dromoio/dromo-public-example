@@ -1,0 +1,15 @@
+SKU,Product,Qty,Price,Category
+sku-1001,Wireless Mouse,42,19.99,electronics
+sku-1002,Bluetooth Keyboard,8,34.50,electronics
+sku-1003,Cotton T-Shirt,150,12.00,apparel
+sku-1004,Ceramic Mug,5,8.75,home_goods
+sku-1005,Denim Jacket,23,59.99,apparel
+sku-1006,LED Desk Lamp,3,22.40,electronics
+sku-1002,Bluetooth Keyboard (restock),60,34.50,electronics
+sku-1007,Throw Pillow,75,15.25,home_goods
+sku-1008,Running Shoes,18,79.99,footwear
+sku-1009,Phone Charger,4,9.99,electronics
+sku-1010,Wool Scarf,,24.00,apparel
+sku-1011,Stainless Water Bottle,33,14.50,home_goods
+sku-1012,Office Chair,12,149.00,home_goods
+SKU-1013,Yoga Mat,9,28.00,apparel
