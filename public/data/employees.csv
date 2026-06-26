@@ -1,0 +1,12 @@
+Emp ID,First,Last,Email,Hire Date,Dept
+emp-3001,Maria,Gonzalez,maria.gonzalez@acme.com,2016-03-14,engineering
+emp-3002,Liam,Chen,liam.chen@acme.com,2021-07-01,sales
+emp-3003,Aisha,Khan,,2019-11-20,marketing
+emp-3004,Tom,Becker,tom.becker@acme.com,2023-09-05,support
+emp-3002,Liam,Chen,liam.chen@acme.com,2021-07-01,sales
+emp-3005,Priya,Patel,priya.patel@acme.com,2012-01-10,engineering
+emp-3006,Jonas,Eriksson,jonas.eriksson@acme.com,2024-02-15,operations
+emp-3007,Nadia,Ibrahim,nadia.ibrahim@acme.com,2018-06-30,marketing
+emp-3008,Carlos,Mendes,carlos.mendes@acme.com,2022-04-18,sales
+emp-3009,Sophie,Laurent,sophie.laurent@acme.com,2009-08-22,engineering
+emp-3010,Derek,Wallace,derek.wallace@acme.com,31/02/2024,support

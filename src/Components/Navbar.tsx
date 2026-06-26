@@ -69,6 +69,18 @@ export default function Navbar(props: {
                   >
                     Fast Track Import
                   </a>
+                  <a
+                    href="#builder"
+                    className={
+                      props.tab === "builder" ? selectedTabClasses : tabClasses
+                    }
+                    onClick={() => props.setTab("builder")}
+                  >
+                    Schema Builder{" "}
+                    <span className="ml-1.5 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
+                      New
+                    </span>
+                  </a>
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">

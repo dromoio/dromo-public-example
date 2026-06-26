@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Custom Step</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 32px 24px;
+      background: #f9fafb;
+      color: #111827;
+    }
+
+    h2 { margin: 0 0 4px; font-size: 18px; }
+    .subtitle { margin: 0 0 24px; color: #6b7280; font-size: 14px; }
+
+    /* ── field builder card ── */
+    .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .card-title { font-size: 13px; font-weight: 600; color: #374151; margin: 0 0 12px; }
+
+    .row { display: flex; gap: 8px; align-items: flex-start; }
+    .col { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    label { font-size: 12px; color: #6b7280; font-weight: 500; }
+
+    input, select {
+      padding: 7px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      width: 100%;
+      background: #fff;
+    }
+    input:focus, select:focus { outline: 2px solid #4f46e5; outline-offset: -1px; border-color: transparent; }
+
+    /* ── select options sub-section ── */
+    #options-section { margin-top: 12px; display: none; }
+    #options-section.visible { display: block; }
+    .options-title { font-size: 12px; color: #6b7280; font-weight: 500; margin: 0 0 8px; }
+    #options-list { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+    #options-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 10px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 5px;
+      font-size: 13px;
+    }
+    #options-list li button {
+      background: none; border: none; cursor: pointer;
+      color: #9ca3af; font-size: 15px; line-height: 1; padding: 0;
+    }
+
+    /* ── pending fields list ── */
+    #fields-list { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+    #fields-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    #fields-list li button {
+      background: none; border: none; cursor: pointer;
+      color: #9ca3af; font-size: 16px; line-height: 1; padding: 0;
+    }
+    #fields-empty { font-size: 13px; color: #9ca3af; font-style: italic; margin: 0 0 8px; }
+
+    /* ── buttons ── */
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    .btn:disabled { opacity: 0.4; cursor: default; }
+    .btn-primary   { background: #4f46e5; color: #fff; }
+    .btn-secondary { background: #fff; border: 1px solid #d1d5db; color: #374151; }
+    .btn-sm { padding: 6px 12px; font-size: 13px; }
+
+    .nav { display: flex; gap: 12px; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <h2 id="title">Add Custom Fields</h2>
+  <p class="subtitle">Define extra fields to add to the import schema, then click Continue.</p>
+
+  <!-- ── Field builder ── -->
+  <div class="card">
+    <p class="card-title">New field</p>
+
+    <div class="row">
+      <div class="col">
+        <label for="field-label">Label</label>
+        <input id="field-label" type="text" placeholder="e.g. Department" />
+      </div>
+      <div class="col" style="max-width:140px">
+        <label for="field-type">Type</label>
+        <select id="field-type">
+          <option value="string">String</option>
+          <option value="select">Select</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Select options sub-section -->
+    <div id="options-section">
+      <p class="options-title" style="margin-top:12px">Options <span style="color:#9ca3af">(at least one required)</span></p>
+      <ul id="options-list"></ul>
+      <div class="row">
+        <div class="col">
+          <input id="opt-label" type="text" placeholder="Label" />
+        </div>
+        <div class="col">
+          <input id="opt-value" type="text" placeholder="Value" />
+        </div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:0;align-self:flex-end" onclick="addOption()">+</button>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <button id="add-field-btn" class="btn btn-primary btn-sm" onclick="addField()" disabled>Add field</button>
+    </div>
+  </div>
+
+  <!-- ── Pending fields ── -->
+  <div class="card">
+    <p class="card-title">Fields to add</p>
+    <p id="fields-empty">No fields added yet.</p>
+    <ul id="fields-list"></ul>
+  </div>
+
+  <!-- ── Nav ── -->
+  <div class="nav">
+    <button class="btn btn-secondary" onclick="window.parent.postMessage({ type: 'DROMO_BACK' }, '*')">Back</button>
+    <button class="btn btn-primary" onclick="onContinue()">Continue</button>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const label = params.get('stepLabel') || params.get('stepId');
+    if (label) document.getElementById('title').textContent = label;
+
+    // ── State ──
+    const pendingFields = [];   // { label, key, type, selectOptions? }
+    let draftOptions = [];      // { label, value }
+
+    // ── Helpers ──
+    const fieldLabel  = () => document.getElementById('field-label');
+    const fieldType   = () => document.getElementById('field-type');
+    const optLabel    = () => document.getElementById('opt-label');
+    const optValue    = () => document.getElementById('opt-value');
+    const isSelect    = () => fieldType().value === 'select';
+
+    function refreshAddBtn() {
+      const hasLabel = fieldLabel().value.trim().length > 0;
+      const hasOpts  = !isSelect() || draftOptions.length > 0;
+      document.getElementById('add-field-btn').disabled = !(hasLabel && hasOpts);
+    }
+
+    function refreshOptionSection() {
+      document.getElementById('options-section').classList.toggle('visible', isSelect());
+      refreshAddBtn();
+    }
+
+    function renderOptions() {
+      const list = document.getElementById('options-list');
+      list.innerHTML = '';
+      draftOptions.forEach((opt, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span><strong>${opt.label}</strong> → ${opt.value}</span>
+          <button onclick="removeOption(${i})">×</button>`;
+        list.appendChild(li);
+      });
+      refreshAddBtn();
+    }
+
+    function renderFields() {
+      const list  = document.getElementById('fields-list');
+      const empty = document.getElementById('fields-empty');
+      list.innerHTML = '';
+      empty.style.display = pendingFields.length ? 'none' : 'block';
+      pendingFields.forEach((f, i) => {
+        const detail = f.type === 'select'
+          ? ` — select (${f.selectOptions.length} option${f.selectOptions.length !== 1 ? 's' : ''})`
+          : ' — string';
+        const li = document.createElement('li');
+        li.innerHTML = `<span><strong>${f.label}</strong>${detail}</span>
+          <button onclick="removeField(${i})">×</button>`;
+        list.appendChild(li);
+      });
+    }
+
+    // ── Actions ──
+    function addOption() {
+      const l = optLabel().value.trim();
+      const v = optValue().value.trim();
+      if (!l || !v) return;
+      draftOptions.push({ label: l, value: v });
+      optLabel().value = '';
+      optValue().value = '';
+      renderOptions();
+    }
+
+    function removeOption(i) {
+      draftOptions.splice(i, 1);
+      renderOptions();
+    }
+
+    function addField() {
+      const lbl = fieldLabel().value.trim();
+      if (!lbl) return;
+      if (isSelect() && draftOptions.length === 0) return;
+
+      const field = {
+        label: lbl,
+        key: lbl.toLowerCase().replace(/\s+/g, '_'),
+        type: fieldType().value,
+      };
+      if (isSelect()) field.selectOptions = [...draftOptions];
+
+      pendingFields.push(field);
+      fieldLabel().value = '';
+      fieldType().value = 'string';
+      draftOptions = [];
+      refreshOptionSection();
+      renderOptions();
+      renderFields();
+    }
+
+    function removeField(i) {
+      pendingFields.splice(i, 1);
+      renderFields();
+    }
+
+    function onContinue() {
+      window.parent.postMessage({ type: 'DROMO_MESSAGE', payload: { fields: pendingFields } }, '*');
+      window.parent.postMessage({ type: 'DROMO_NEXT' }, '*');
+    }
+
+    // ── Wire up events ──
+    fieldLabel().addEventListener('input', refreshAddBtn);
+    fieldType().addEventListener('change', refreshOptionSection);
+    optLabel().addEventListener('keydown', (e) => { if (e.key === 'Enter') addOption(); });
+    optValue().addEventListener('keydown', (e) => { if (e.key === 'Enter') addOption(); });
+    fieldLabel().addEventListener('keydown', (e) => { if (e.key === 'Enter' && !isSelect()) addField(); });
+  </script>
+</body>
+</html>
